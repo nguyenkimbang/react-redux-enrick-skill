@@ -23,7 +23,7 @@ class Login extends React.Component
 
 	componentDidMount () {
 		if (localStorage.getItem('token')) {
-		  // this.props.history.push('/')
+		  this.props.history.push('/')
 		}
 	}
 
@@ -35,13 +35,13 @@ class Login extends React.Component
 		this.setState({loginData: {...this.state.loginData, loginType: e.target.value}});
 	}
 
-	// shouldComponentUpdate (nextProps) {
-	// 	if (nextProps.loginInfo.is_logged === true) {
-	// 		this.props.history.push('/')
-	// 		return false;
-	// 	}
-	// 	return true;
-	// }
+	shouldComponentUpdate (nextProps) {
+		if (nextProps.loginInfo.is_logged === true) {
+			this.props.history.push('/')
+			return false;
+		}
+		return true;
+	}
 
 	render () {
 		return (

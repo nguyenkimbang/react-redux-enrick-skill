@@ -10,6 +10,7 @@ import ProductSaga from 'modules/product/services/saga/productSaga'
 function* listenActions() {
   yield takeEvery(actions.DO_LOGIN, LoginSaga.doLogin);
   yield takeEvery(actions.GET_PRODUCT_LIST, ProductSaga.getProductList);
+  yield takeEvery(actions.GET_PRODUCT_DETAIL, ProductSaga.getProductDetail);
 }
 
 export default listenActions;

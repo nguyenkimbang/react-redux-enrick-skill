@@ -1,0 +1,22 @@
+.header {
+    padding: 10px 20px;
+    background-color: #e1dcdc57;
+}
+
+.header .left-header {
+    float: left;
+}
+
+
+.header .right-header {
+    float: right;
+}
+
+.header .right-header label {
+    cursor: pointer;
+    color: cornflowerblue;
+}
+
+.clear-fix {
+    clear: both;
+}

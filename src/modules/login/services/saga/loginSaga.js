@@ -9,6 +9,7 @@ function* doLogin(action) {
       const response = yield call(doLoginApi, action.payload.loginInfo);
       if (response && response.token) {
          localStorage.setItem('token', response.token);
+         localStorage.setItem('customerInfo', JSON.stringify(response.customerInfo));
          yield put({type: actions.SUCCESS, successInfo: {
             type: 'login',
             message: ''
@@ -26,7 +27,7 @@ function* doLogin(action) {
       yield put({type: actions.LOGIN_FAILED, message: e.message});
    }
 }
-
-export default {
+const loginFn = {
    doLogin
-};
+}
+export default loginFn;

@@ -4,10 +4,6 @@ import { Button, Modal } from 'react-bootstrap';
 import * as productAction from './../../actions/productAction'
 
 class ProductDetail extends React.Component {
-  constructor(props){
-    super(props);
-  }
-
   hideModal () {
     this.props.hideModal();
   }

@@ -59,7 +59,6 @@ class Login extends React.Component
 						<select className="form-control" value={this.state.loginData.loginType} onChange={this.changeLoginType}>
 							<option value="">Select type</option>
 							<option value="customer">Customer</option>
-							<option value="staff">Staff</option>
 						</select>
 					</div>
 					<div className="col-12">

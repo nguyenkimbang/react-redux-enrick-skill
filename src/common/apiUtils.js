@@ -1,6 +1,7 @@
 
 import axios from 'axios';
 import {apiUrl, base_api_url} from  './../utils/LocalApi'
+import logout from 'modules/logout/Logout'
 
 const headerDefault = () => {
 	const token = localStorage.getItem('token') || '';
@@ -21,11 +22,19 @@ function postUnAuth (url, data, header) {
 	})
 }
 
-function post (url, data, header) {
+function post (url, data, header = {}) {
+	let linkReq = apiUrl[url];
+	if (! linkReq) {
+		linkReq = `${base_api_url}/${url}`;
+	}
+	header = {...headerDefault(), ...header};
 	return new Promise((resolve, reject) => {
-		axios.post(apiUrl[url], data, {...headerDefault(), ...header}).then(res => {
-			resolve(res);
+		axios.post(apiUrl[url], data, {...header}).then(res => {
+			resolve({result: res.data, code: res.status});
 		}).catch(err => {
+			if (err.response && err.response.status === 401) {
+				return logout();
+			}
 			reject(err.response || err);
 		})
 	})
@@ -41,6 +50,9 @@ function get (url, header = {}, params = {}) {
 		axios.get(linkReq, {...header}).then(res => {
 			resolve({result: res.data, code: res.status});
 		}).catch(err => {
+			if (err.response && err.response.status === 401) {
+				return logout();
+			}
 			reject(err.response || err);
 		})
 	})

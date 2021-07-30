@@ -20,6 +20,7 @@ function* getProductList(action) {
 function* getProductDetail(action) {
    try {
       const response = yield call(getProductDetailApi, action.payload.productId);
+         console.log(response)
       if (response && parseInt(response.code) === 200) {
          yield put({type: actions.GET_PRODUCT_DETAIL_SUCCESS, productInfo: response.result});
          return
@@ -30,7 +31,9 @@ function* getProductDetail(action) {
    }
 }
 
-export default {
+const sageFn = {
    getProductList,
    getProductDetail
 };
+
+export default sageFn;

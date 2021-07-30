@@ -2,14 +2,19 @@ import React from 'react'
 import {connect} from 'react-redux'
 import { withRouter } from "react-router"
 import { Table } from 'react-bootstrap'
-import * as productAction from './../actions/productAction'
+import rootActionConfig from 'core/actions'
+import rootMessage from 'core/messages'
 import ProductDetail from './modals/ProductDetail'
-import Pagination from "react-js-pagination"
+import Pagination from "components/common/BikePagination"
 import * as rootConst from 'config/constants'
+import iconDetail from 'assets/images/details.svg'
+import iconPlus from 'assets/images/plus.svg'
+import ShoppingCart from './Cart'
+import { ToastContainer, toast } from 'react-toastify';
 
 
 
-class Dashboard extends React.Component {
+class Product extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -70,12 +75,26 @@ class Dashboard extends React.Component {
       )
     }
     return products.map((product, index) => {
+      const pointerS = {cursor: 'pointer'};
       return (
         <tr key={index}>
           {
             this.state.tbheads.map((item, key) => {
               if (item.key === 'action') {
-                return <td key={key}><button key={key} type="button" onClick={() => this.showDetail(product)}>View</button></td>
+                return <td key={key} className="text-center">
+                  <div className="col-12 d-flex justify-content-center">
+                    <div className="" style={pointerS} onClick={() => this.showDetail(product)}>
+                      <img src={iconDetail} alt="icon detail" width="20px" height="20px"/>
+                    </div>
+                    <div className="ml-2" style={pointerS} onClick={() => this.props.addCartAction({
+                      product_id: product.id,
+                      list_price: product.list_price,
+                      product_name: product.product_name
+                    })}>
+                      <img src={iconPlus} alt="icon plus" width="23px" height="23px"/>
+                    </div>
+                  </div>
+                </td>
               }
               return <td key={key}>{product[item.key]}</td>
             })
@@ -91,12 +110,15 @@ class Dashboard extends React.Component {
       products = this.props.products.list;
     }
     return (
-      <div className="container mb-5">
+      <div className="container mb-5 mt-3">
         <div className="row mt-1">
-          <div className="col-12">
+          <div className="col-12 d-flex">
             <h1>Product List</h1>
+            <div className="ml-auto">
+              <ShoppingCart/>
+            </div>
           </div>
-          <div className="col-12 d-flex justify-content-end">
+          <div className="col-12 mt-4 d-flex justify-content-end">
             <div className="input-group mb-3 w-50">
               <input type="text" className="form-control" value={this.state.search}
               onChange={this.changeValueSearch.bind(this)}/>
@@ -106,11 +128,11 @@ class Dashboard extends React.Component {
           </div>
           </div>
         </div>
-        <Table responsive>
+        <Table responsive  className="mt-1">
           <thead>
             <tr>
               {this.state.tbheads.map((item, index) => (
-                <th key={index}>{item.label}</th>
+                <th className={item.className} key={index}>{item.label}</th>
               ))}
             </tr>
           </thead>
@@ -120,15 +142,20 @@ class Dashboard extends React.Component {
         </Table>
         { this.props.products.totalItem/rootConst.TOTAL_ITEM_PER_PAGE > 1  && <div>
           <Pagination
-            itemClass="page-item"
-            activePage={this.state.activePage}
-            itemsCountPerPage={rootConst.TOTAL_ITEM_PER_PAGE}
-            totalItemsCount={this.props.products.totalItem}
-            pageRangeDisplayed={rootConst.PAGE_NUMBER}
-            onChange={this.changePage.bind(this)}
+            onPageChange={this.changePage.bind(this)}
+            {...{
+              currentPage: this.state.activePage,
+              totalItem: this.props.products.totalItem,
+              perPage: rootConst.TOTAL_ITEM_PER_PAGE,
+              numOfPageDisplay: rootConst.PAGE_NUMBER
+            }}
           />
         </div>}
         <ProductDetail/>
+        <ToastContainer
+          position="top-right"
+          autoClose={2000}
+        />
       </div>
     )
   }
@@ -157,7 +184,8 @@ class Dashboard extends React.Component {
       },
       {
         key: 'action',
-        label: 'Action'
+        label: 'Action',
+        className: 'text-center'
       }
     ]
   }
@@ -172,11 +200,15 @@ const mapStateToProp = currentState => {
 }
 
 const mapDispatchToProps = (dispatch) => ({
-	loadProductList: (params) => dispatch(productAction.productListAction(params)),
+	loadProductList: (params) => dispatch(rootActionConfig.product.productListAction(params)),
   loadProductDetail: (productId) => {
-    dispatch(productAction.productDetailAction(productId))
-    dispatch(productAction.productShowDetailAction())
+    dispatch(rootActionConfig.product.productDetailAction(productId));
+    dispatch(rootActionConfig.product.productShowDetailAction());
+  },
+  addCartAction: (product) => {
+    dispatch(rootActionConfig.cart.addCartAction(product));
+    toast(rootMessage.cart.ADD_CART_SUCCESS);
   }
 })
 
-export default  connect(mapStateToProp, mapDispatchToProps)(withRouter(Dashboard));
+export default connect(mapStateToProp, mapDispatchToProps)(withRouter(Product));

@@ -1,6 +1,6 @@
-import Login from './modules/login/components/Login';
-import StudyRedux from './components/demo_redux/StudyRedux';
-import Product from 'modules/product/components/Product';
+import Login from './modules/login/components/Login'
+import Product from 'modules/product/components/Product'
+import Cart from 'modules/cart/components/Cart'
 
 
 const routes = [
@@ -15,9 +15,9 @@ const routes = [
         component: () => <Login/>
     },
     {
-        path: '/demo-redux',
+        path: '/cart',
         exact: true,
-        component: () => <StudyRedux/>
+        component: () => <Cart/>
     }
 ]
 

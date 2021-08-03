@@ -71,15 +71,15 @@ class BikePagination extends React.Component {
         }
         return (
             <Pagination >
-                <Pagination.First onClick={() => this.changePage(1)} disabled={currentPage === 1} />
-                <Pagination.Prev onClick={() => this.changePage(currentPage - 1)} disabled={currentPage === 1}/>
+                {currentPage > 1 && <Pagination.First onClick={() => this.changePage(1)} disabled={currentPage === 1} />}
+                {currentPage > 1 && <Pagination.Prev onClick={() => this.changePage(currentPage - 1)} disabled={currentPage === 1}/>}
                 { this.renderFirstPage() }
                 { this.renderLeftEllipsis() }
                 { this.renderCenterPage() }
                 { this.renderRightEllipsis() }
                 { this.renderLastPage() }
-                <Pagination.Next onClick={() => this.changePage(currentPage + 1)} disabled={currentPage === totalPage}/>
-                <Pagination.Last onClick={() => this.changePage(totalPage)} disabled={currentPage === totalPage}/>
+                {currentPage < totalPage && <Pagination.Next onClick={() => this.changePage(currentPage + 1)} disabled={currentPage === totalPage}/>}
+                {currentPage < totalPage && <Pagination.Last onClick={() => this.changePage(totalPage)} disabled={currentPage === totalPage}/>}
             </Pagination>
         );
     }

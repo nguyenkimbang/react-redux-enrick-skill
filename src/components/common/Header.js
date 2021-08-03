@@ -7,9 +7,6 @@ import {Navbar, Container, Nav, Dropdown, ButtonGroup} from 'react-bootstrap'
 class Header extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {
-            user_name: ''
-        }
         this.logout = this.logout.bind(this);
     }
 
@@ -21,16 +18,15 @@ class Header extends React.Component {
         }
         window.location.href = 'login';
     }
-    componentDidMount() {
-        if (localStorage.getItem('customerInfo')) {
-            const user = JSON.parse(localStorage.getItem('customerInfo'));
-            this.setState({user_name: user.first_name + ' ' + user.last_name});
-        }
-    }
 
     renderHeader () {
         if (! localStorage.getItem('token')) {
             return '';
+        }
+        let user_name = '';
+        if (localStorage.getItem('customerInfo')) {
+            const user = JSON.parse(localStorage.getItem('customerInfo'));
+            user_name = user.first_name + ' ' + user.last_name;
         }
 
         return (
@@ -47,9 +43,9 @@ class Header extends React.Component {
                         </Nav>
                         <Navbar.Collapse className="justify-content-end">
                             <Dropdown as={ButtonGroup}>
-                                <div className="align-self-center">{this.state.user_name}</div>
+                                <div className="align-self-center">{user_name}</div>
                                 <Dropdown.Toggle split variant="" id="dropdown-split-basic" style={{border: 'none', outline: 'none', 'boxShadow': 'none'}} />
-                                    <Dropdown.Menu style={{left: 'auto', right: 0}}>
+                                    <Dropdown.Menu style={{left: 'auto', right: 0, cursor: 'pointer'}}>
                                         <div className="dropdown-item" onClick={this.logout}>Logout</div>
                                     </Dropdown.Menu>
                                 </Dropdown>

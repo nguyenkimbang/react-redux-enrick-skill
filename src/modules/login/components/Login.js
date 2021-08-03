@@ -12,7 +12,7 @@ class Login extends React.Component
 		this.state = {
 			loginData: {
 				email: '',
-				loginType: ''
+				loginType: 'customer'
 			},
 			errMsg: ''
 		};
@@ -55,9 +55,8 @@ class Login extends React.Component
 						<input type="email" value={this.state.loginData.email} onChange={this.changeUsername} className="form-control"/>
 					</div>
 					<div className="form-group mb-1">
-						<label className="form-label" htmlFor="passw">Password</label>
+						<label className="form-label" htmlFor="passw">Login Type</label>
 						<select className="form-control" value={this.state.loginData.loginType} onChange={this.changeLoginType}>
-							<option value="">Select type</option>
 							<option value="customer">Customer</option>
 						</select>
 					</div>

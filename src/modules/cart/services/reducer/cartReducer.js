@@ -9,10 +9,15 @@ const cartItemDefault = {
   price: 0,
   required_date: null
 }
-const data = localStorage.getItem('cart');
-const carts = data ? JSON.parse(data) : [];
 
-function handleCart (state = carts, action) {
+let carts = {};
+
+function handleCart (state = [], action) {
+  const userId = commonMethod.getCustomerId();
+  if (! userId) {
+    return [...state];
+  }
+  state = getCartOfUser(userId);
   switch (action.type) {
     case actions.ADD_CART:
       state = addItemToCart([...state], action.product);
@@ -30,7 +35,13 @@ function handleCart (state = carts, action) {
     default:
       return [...state];
   }
-  localStorage.setItem('cart', JSON.stringify(state));
+  if (action.type !== actions.CART_ORDER_SUCCESS && state.length > 0) {
+    carts[`u_${userId}`] = [...state];
+    localStorage.setItem('cart', JSON.stringify(carts));
+  } else if (state.length === 0) {
+    commonMethod.removeCartStorage()
+  }
+  
   return [...state];
 }
 
@@ -92,6 +103,12 @@ function removeCartItem(currentState, product_id) {
   }
 
   return [...currentState];
+}
+
+function getCartOfUser(userId) {
+  carts = localStorage.getItem('cart');
+  carts = carts ? JSON.parse(carts) : {};
+  return (userId && carts[`u_${userId}`]) ? carts[`u_${userId}`] : [];
 }
 
 export default combineReducers({

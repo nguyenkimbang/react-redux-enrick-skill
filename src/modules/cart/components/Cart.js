@@ -31,10 +31,14 @@ class Cart extends React.Component {
     }
   }
 
-  changeQuantity (evt, product_id) {
+  changeQuantity (evt, product_id, cartItem) {
     let quantity = evt.target.value.trim();
-    if (quantity === '') {
+    if (quantity < 1) {
       quantity = 1;
+    }
+
+    if ('' + cartItem.quantity === '' + quantity) {
+      return false;
     }
 
     this.props.edit({quantity, product_id});
@@ -66,16 +70,16 @@ class Cart extends React.Component {
     }
   }
 
-  renderTBody(products) {
-    if (products.length === 0) {
+  renderTBody(carts) {
+    if (carts.length === 0) {
       return (
         <tr>
           <td colSpan={this.state.tbheads.length} className="text-center">No result</td>
         </tr>
       )
     }
-    return products.map((product, index) => {
-      const totalPrice = parseFloat(product['price']) * parseInt(product['quantity']);
+    return carts.map((cart, index) => {
+      const totalPrice = parseFloat(cart['price']) * parseInt(cart['quantity']);
       const pointerS = {cursor: 'pointer'};
 
       return (
@@ -85,19 +89,19 @@ class Cart extends React.Component {
               if (item.key === 'action') {
                 return <td key={key} className="text-center">
                   <div className="col-12 d-flex  justify-content-center">
-                    <div className="" style={pointerS} onClick={() => this.removeCartItem(product['product_id'])}>
+                    <div className="" style={pointerS} onClick={() => this.removeCartItem(cart['product_id'])}>
                       <img src={iconTrash} alt="icon trash-bin" width="20px" height="20px"/>
                     </div>
                   </div>
                 </td>
               } else if (item.key === 'total_price') {
-                return <td key={key}>{totalPrice}</td>
+                return <td key={key}>{(Number.isInteger(totalPrice)) ? totalPrice : totalPrice.toFixed(2)}</td>
               } else if (item.key === 'required_date') {
-                return <td key={key}>{moment(product['required_date']).isValid() &&<DatePicker className="form-control" selected={new Date(product['required_date'])} minDate={new Date()} onChange={(date) => this.changeRequiredDate(date, product['product_id'])} />}</td>
+                return <td key={key}>{moment(cart['required_date']).isValid() &&<DatePicker className="form-control" selected={new Date(cart['required_date'])} minDate={new Date()} onChange={(date) => this.changeRequiredDate(date, cart['product_id'])} />}</td>
               } else if (item.key === 'quantity') {
-                return <td key={key}><input type="number" className="form-control" min="1" value={parseInt(product[item.key])} onChange={(e) => {this.changeQuantity(e, product['product_id'])}}/></td>
+                return <td key={key}><input type="text" className="form-control" minLength="1" maxLength="4" value={parseInt(cart[item.key])} onChange={(e) => {this.changeQuantity(e, cart['product_id'], cart)}}/></td>
               }
-              return <td key={key}>{product[item.key]}</td>
+              return <td key={key}>{cart[item.key]}</td>
             })
           }
         </tr>
